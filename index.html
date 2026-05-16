@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grand Tasting — Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a1f35;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #f5f0e8;
+    --cream-dark: #ede6d6;
+    --text: #2c2c2c;
+    --muted: #888;
+    --error: #c0392b;
+    --success-bg: #1a1f35;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  .header {
+    width: 100%;
+    background: var(--navy);
+    padding: 28px 32px 22px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(201,168,76,0.04) 40px,
+      rgba(201,168,76,0.04) 80px
+    );
+  }
+  .header-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: 1px;
+    line-height: 1.2;
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .gold-line {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    margin: 14px auto 0;
+  }
+
+  /* ── Form wrapper ── */
+  .form-wrap {
+    width: 100%;
+    max-width: 560px;
+    padding: 32px 24px 48px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  /* ── Field ── */
+  .field {
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-bottom: 2px solid var(--cream-dark);
+    padding: 14px 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 16px; /* prevent iOS zoom */
+    font-weight: 300;
+    color: var(--text);
+    outline: none;
+    border-radius: 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--gold);
+    border-bottom-color: var(--gold);
+    box-shadow: 0 2px 0 var(--gold);
+  }
+  .field input::placeholder { color: #bbb; font-weight: 300; }
+  .field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ── Error ── */
+  .field-error {
+    font-size: 11px;
+    color: var(--error);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    display: none;
+  }
+  .field.has-error input,
+  .field.has-error select {
+    border-color: var(--error);
+    border-bottom-color: var(--error);
+  }
+  .field.has-error .field-error { display: block; }
+
+  /* ── Submit ── */
+  .submit-wrap { margin-top: 32px; }
+  .btn-submit {
+    width: 100%;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 18px 32px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+  .btn-submit:active { background: #0f1220; }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-submit .btn-text { transition: opacity 0.2s; }
+  .btn-submit.loading .btn-text { opacity: 0; }
+  .spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-submit.loading .spinner { opacity: 1; }
+  .spinner svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Global error ── */
+  .global-error {
+    background: #fdf0ef;
+    border-left: 3px solid var(--error);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--error);
+    margin-bottom: 20px;
+    border-radius: 2px;
+    display: none;
+  }
+  .global-error.show { display: block; }
+
+  /* ── Success screen ── */
+  .success-screen {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    background: var(--navy);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+  }
+  .success-screen.show {
+    display: flex;
+    animation: fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+  .badge-wrap {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .badge-ring {
+    width: 160px;
+    height: 160px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulse-ring 2s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { border-color: rgba(201,168,76,0.3); }
+    50% { border-color: rgba(201,168,76,0.7); }
+  }
+  .badge-inner {
+    width: 130px;
+    height: 130px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .badge-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .badge-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-top: 2px;
+  }
+
+  .success-greeting {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .success-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .success-company {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .gold-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 32px;
+  }
+
+  .success-message {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+    max-width: 280px;
+    margin-bottom: 40px;
+  }
+
+  .btn-next {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 14px 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-next:hover, .btn-next:active {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  /* ── Decorative corners ── */
+  .corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+  }
+  .corner-tl { top: 24px; left: 24px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+  .corner-tr { top: 24px; right: 24px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+  .corner-bl { bottom: 24px; left: 24px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+  .corner-br { bottom: 24px; right: 24px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ══ FORM PAGE ══ -->
+<div class="header">
+  <div class="header-eyebrow">Bangkok · 3 June 2026</div>
+  <div class="header-title">Spanish Wines from<br><em>Castilla-La Mancha</em></div>
+  <div class="gold-line"></div>
+</div>
+
+<div class="form-wrap">
+  <div class="section-label">Guest Registration</div>
+
+  <div class="global-error" id="globalError"></div>
+
+  <form id="regForm" novalidate>
+    <div class="row-2">
+      <div class="field" id="f-name">
+        <label>First Name</label>
+        <input type="text" name="name" placeholder="e.g. Somchai" autocomplete="given-name" inputmode="text">
+        <div class="field-error">Please enter your first name</div>
+      </div>
+      <div class="field" id="f-surname">
+        <label>Surname</label>
+        <input type="text" name="surname" placeholder="e.g. Jaidee" autocomplete="family-name" inputmode="text">
+        <div class="field-error">Please enter your surname</div>
+      </div>
+    </div>
+
+    <div class="field" id="f-email">
+      <label>Email Address</label>
+      <input type="email" name="email" placeholder="name@company.com" autocomplete="email" inputmode="email">
+      <div class="field-error">Please enter a valid email address</div>
+    </div>
+
+    <div class="field" id="f-telephone">
+      <label>Telephone</label>
+      <input type="tel" name="telephone" placeholder="+66 8x xxx xxxx" autocomplete="tel" inputmode="tel">
+      <div class="field-error">Please enter your telephone number</div>
+    </div>
+
+    <div class="field" id="f-company">
+      <label>Company Name</label>
+      <input type="text" name="company" placeholder="Your organisation" autocomplete="organization" inputmode="text">
+      <div class="field-error">Please enter your company name</div>
+    </div>
+
+    <div class="field" id="f-position">
+      <label>Job Position</label>
+      <select name="position">
+        <option value="">— Select your role —</option>
+        <option>Owner / Director</option>
+        <option>General Manager</option>
+        <option>Food & Beverage Manager</option>
+        <option>Sommelier / Wine Buyer</option>
+        <option>Restaurant Manager</option>
+        <option>Importer / Distributor</option>
+        <option>Retailer</option>
+        <option>Journalist / Media</option>
+        <option>Other</option>
+      </select>
+      <div class="field-error">Please select your position</div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span class="btn-text">Register Now</span>
+        <span class="spinner">
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="8" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <path d="M10 2a8 8 0 0 1 8 8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ══ SUCCESS SCREEN ══ -->
+<div class="success-screen" id="successScreen">
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="badge-wrap">
+    <div class="badge-ring">
+      <div class="badge-inner">
+        <div class="badge-number" id="guestNumber">—</div>
+        <div class="badge-label">Guest No.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-greeting">Welcome to the tasting,</div>
+  <div class="success-name" id="guestName"></div>
+  <div class="success-company" id="guestCompany"></div>
+
+  <div class="gold-divider"></div>
+
+  <div class="success-message">
+    Registration complete. Please collect your sticker with this number from our staff.
+  </div>
+
+  <button class="btn-next" onclick="resetForm()">Next Guest →</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// ⚙️  CONFIGURATION
+// Paste your Google Apps Script Web App URL below
+// ════════════════════════════════════════════════
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPaEv6FWoB817jaao61u3sx83q526GnPk4iCCWwYaiJhfMNBT59sohPKA0Z-qxb8bU/exec";
+
+// ════════════════════════════════════════════════
+
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+const globalError = document.getElementById('globalError');
+const successScreen = document.getElementById('successScreen');
+
+const fields = {
+  name:      { el: document.getElementById('f-name'),      validate: v => v.trim().length >= 1 },
+  surname:   { el: document.getElementById('f-surname'),   validate: v => v.trim().length >= 1 },
+  email:     { el: document.getElementById('f-email'),     validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+  telephone: { el: document.getElementById('f-telephone'), validate: v => v.trim().length >= 6 },
+  company:   { el: document.getElementById('f-company'),   validate: v => v.trim().length >= 1 },
+  position:  { el: document.getElementById('f-position'),  validate: v => v !== '' },
+};
+
+// Clear error on input
+Object.keys(fields).forEach(key => {
+  const input = fields[key].el.querySelector('input, select');
+  input.addEventListener('input', () => fields[key].el.classList.remove('has-error'));
+  input.addEventListener('change', () => fields[key].el.classList.remove('has-error'));
+});
+
+function validateAll() {
+  let valid = true;
+  Object.keys(fields).forEach(key => {
+    const input = fields[key].el.querySelector('input, select');
+    if (!fields[key].validate(input.value)) {
+      fields[key].el.classList.add('has-error');
+      valid = false;
+    }
+  });
+  return valid;
+}
+
+function getValue(key) {
+  return fields[key].el.querySelector('input, select').value.trim();
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  globalError.classList.remove('show');
+
+  if (!validateAll()) return;
+
+  // Loading state
+  submitBtn.disabled = true;
+  submitBtn.classList.add('loading');
+
+  const payload = {
+    name:      getValue('name'),
+    surname:   getValue('surname'),
+    email:     getValue('email'),
+    telephone: getValue('telephone'),
+    company:   getValue('company'),
+    position:  getValue('position'),
+  };
+
+  try {
+    let guestNumber;
+
+    if (SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+      // ── DEMO MODE (no backend connected) ──
+      await new Promise(r => setTimeout(r, 900));
+      guestNumber = Math.floor(Math.random() * 50) + 1; // simulated
+    } else {
+      // ── LIVE MODE — GET with URL params (avoids CORS) ──
+      const params = new URLSearchParams({
+        name:      payload.name,
+        surname:   payload.surname,
+        email:     payload.email,
+        telephone: payload.telephone,
+        company:   payload.company,
+        position:  payload.position,
+      });
+      const res = await fetch(SCRIPT_URL + '?' + params.toString(), {
+        method: 'GET',
+      });
+      if (!res.ok) throw new Error('Server error');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Unknown error');
+      guestNumber = data.guestNumber;
+    }
+
+    // Show success
+    document.getElementById('guestNumber').textContent = guestNumber;
+    document.getElementById('guestName').textContent = `${payload.name} ${payload.surname}`;
+    document.getElementById('guestCompany').textContent = payload.company;
+    successScreen.classList.add('show');
+
+  } catch (err) {
+    globalError.textContent = 'Registration failed. Please check your connection and try again.';
+    globalError.classList.add('show');
+    window.scrollTo(0, 0);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('loading');
+  }
+});
+
+function resetForm() {
+  successScreen.classList.remove('show');
+  form.reset();
+  Object.keys(fields).forEach(k => fields[k].el.classList.remove('has-error'));
+  globalError.classList.remove('show');
+  window.scrollTo(0, 0);
+}
+</script>
+
+<!-- ══════════════════════════════════════════════
+  📋 GOOGLE APPS SCRIPT CODE
+  1. Go to script.google.com → New project
+  2. Replace all code with the block below
+  3. Deploy → Web App → Anyone can access
+  4. Paste the URL into SCRIPT_URL above
+═══════════════════════════════════════════════════
+
+const SHEET_ID = "YOUR_GOOGLE_SHEET_ID_HERE"; // from the sheet URL
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+
+    // Add header row if sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["#", "Timestamp", "Name", "Surname", "Email", "Telephone", "Company", "Position"]);
+    }
+
+    const guestNumber = sheet.getLastRow(); // row 1 = header, row 2 = guest #1
+    const timestamp = new Date().toLocaleString("th-TH", { timeZone: "Asia/Bangkok" });
+
+    sheet.appendRow([
+      guestNumber,
+      timestamp,
+      data.name,
+      data.surname,
+      data.email,
+      data.telephone,
+      data.company,
+      data.position
+    ]);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, guestNumber: guestNumber }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+══════════════════════════════════════════════ -->
+</body>
+</html>
